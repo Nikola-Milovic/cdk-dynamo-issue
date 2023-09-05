@@ -41,7 +41,7 @@ export class LambdaStack extends Stack {
     });
 
     // Grant Lambda permissions to write to the DynamoDB table
-    dynamoTable.grantWriteData(lambdaFunction);
+    dynamoTable.grantFullAccess(lambdaFunction);
 
     new CfnOutput(this, 'ApiUrl', {
       value: api.url,
