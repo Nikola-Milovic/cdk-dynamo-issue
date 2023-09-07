@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -21,13 +22,14 @@ func (c credentialsProvider) Retrieve(ctx context.Context) (aws.Credentials, err
 }
 
 func init() {
+	endpointUrl := "http://" + os.Getenv("LOCALSTACK_HOSTNAME") + ":" + os.Getenv("EDGE_PORT")
 	sdkConfig, err := config.LoadDefaultConfig(context.TODO(),
 		config.WithCredentialsProvider(credentialsProvider{}),
 		config.WithRegion("eu-central-1"),
 		config.WithEndpointResolverWithOptions(
 			aws.EndpointResolverWithOptionsFunc(
 				func(service, region string, options ...interface{}) (aws.Endpoint, error) {
-					return aws.Endpoint{URL: "http://localstack:4566"}, nil
+					return aws.Endpoint{URL: endpointUrl}, nil
 				}),
 		))
 	if err != nil {
